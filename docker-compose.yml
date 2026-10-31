@@ -1,0 +1,26 @@
+services:
+  nasearch:
+    image: ghcr.io/dewgenenny/nasearch:latest
+    container_name: nasearch
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - /mnt/data:/~0~:ro
+      - ./index:/index
+    environment:
+      - LOCATE_DB=/index/files.db
+      - DATA_PATH=/~0~
+      - NOAUTH=true
+      - TZ=Asia/Shanghai
+
+  nginx-auth-proxy:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx-main.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./auth.js:/etc/nginx/conf.d/auth.js:ro
+    depends_on:
+      - nasearch
