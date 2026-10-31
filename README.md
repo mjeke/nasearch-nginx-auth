@@ -1,0 +1,1 @@
+# nasearch-nginx-auth
